@@ -18,6 +18,7 @@ ADS1230::ADS1230(uint dout, uint sclk, uint pdwn)
 
 int32_t ADS1230::getRaw()
 {
+    _raw = 0;
     for (int i = 0; i < 20; i++)
     {
         gpio_put(_sclkPin, true);
@@ -28,7 +29,17 @@ int32_t ADS1230::getRaw()
         gpio_put(_sclkPin, false);
         sleep_us(2);
     }
-    _raw <<= 12;
+
+    gpio_put(_sclkPin, true);
+    sleep_us(2);
+    gpio_put(_sclkPin, false);
+    sleep_us(2);
+
+    if (_raw & 0x80000)
+    {
+        _raw = ~_raw;
+        _raw = -1 * (_raw & 0x7FFFF);
+    }
     return _raw;
 }
 
