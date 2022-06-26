@@ -1,7 +1,9 @@
 #include "ads1230.h"
 #include "pico/stdlib.h"
-ADS1230::ADS1230(uint dout, uint sclk, uint pdwn)
+ADS1230::ADS1230(uint dout, uint sclk, uint pdwn, uint gain, float VRef)
 {
+    _gain = gain;
+    _vref = VRef;
     _doutPin = dout;
     _sclkPin = sclk;
     _pdwnPin = pdwn;
@@ -62,6 +64,14 @@ void ADS1230::powerDown()
 void ADS1230::wakeUp()
 {
     gpio_put(_pdwnPin, true);
+}
+
+float ADS1230::getMilliVolt()
+{
+    float mv = 0.0;
+    int32_t raw = getRaw();
+    mv = (float)((float)(_vref / _gain) * raw / 0X7FFFF) * 1000;
+    return mv;
 }
 
 ADS1230::~ADS1230()
