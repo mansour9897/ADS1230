@@ -17,6 +17,8 @@ public:
              float pVExc, /* Excitation voltage */
              float pMvPerVolt /* loadcell mv/v */);
     ~loadcell();
+
+    float getValue();
 };
 
 #endif // !_loadcell_h_
