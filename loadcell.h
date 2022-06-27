@@ -6,7 +6,7 @@
 class loadcell
 {
 private:
-    ADS1230 ads;
+    ADS1230 *ads;
     float capacity;
     float vExc;
     float mvPerVolt;

@@ -1,11 +1,11 @@
 #include "loadcell.h"
 
 loadcell::loadcell(ADS1230 pAds,
-                   float pCapacity /* Loadcell capacity */,
-                   float pVExc, /* Excitation voltage */
+                   float pCapacity, /* Loadcell capacity */
+                   float pVExc,     /* Excitation voltage */
                    float pMvPerVolt /* loadcell mv/v */)
 {
-    ads = pAds;
+    ads = &pAds;
     capacity = pCapacity;
     vExc = pVExc;
     mvPerVolt = pMvPerVolt;
@@ -14,7 +14,7 @@ loadcell::loadcell(ADS1230 pAds,
 float loadcell::getValue()
 {
     float load = 0.0;
-    load = (ads.getMilliVolt() * capacity) / (vExc * mvPerVolt);
+    load = (ads->getMilliVolt() * capacity) / (vExc * mvPerVolt);
     return load;
 }
 
