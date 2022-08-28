@@ -20,27 +20,31 @@ ADS1230::ADS1230(uint dout, uint sclk, uint pdwn, uint gain, float VRef)
 
 int32_t ADS1230::getRaw()
 {
-    _raw = 0;
-    for (int i = 0; i < 20; i++)
+    if (to_ms_since_boot(get_absolute_time()) - _lastTime > 120)
     {
+        _raw = 0;
+        for (int i = 0; i < 20; i++)
+        {
+            gpio_put(_sclkPin, true);
+            sleep_us(1);
+            _raw <<= 1;
+            _raw |= gpio_get(_doutPin);
+            sleep_us(1);
+            gpio_put(_sclkPin, false);
+            sleep_us(2);
+        }
+
         gpio_put(_sclkPin, true);
-        sleep_us(1);
-        _raw <<= 1;
-        _raw |= gpio_get(_doutPin);
-        sleep_us(1);
+        sleep_us(2);
         gpio_put(_sclkPin, false);
         sleep_us(2);
-    }
 
-    gpio_put(_sclkPin, true);
-    sleep_us(2);
-    gpio_put(_sclkPin, false);
-    sleep_us(2);
-
-    if (_raw & 0x80000)
-    {
-        _raw = ~_raw;
-        _raw = -1 * (_raw & 0x7FFFF);
+        if (_raw & 0x80000)
+        {
+            _raw = ~_raw;
+            _raw = -1 * (_raw & 0x7FFFF);
+        }
+        _lastTime = to_ms_since_boot(get_absolute_time());
     }
     return _raw;
 }

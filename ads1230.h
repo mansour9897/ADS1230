@@ -12,6 +12,7 @@ private:
     uint _pdwnPin;
     uint _gain;
     float _vref;
+    uint32_t _lastTime;
 
 public:
     ADS1230(uint dout, uint sclk, uint pdwn, uint gain, float VRef);
